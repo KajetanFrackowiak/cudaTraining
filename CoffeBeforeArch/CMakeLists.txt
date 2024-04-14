@@ -10,7 +10,7 @@ find_package(CUDA REQUIRED)
 # Add CUDA include and library directories
 include_directories(${CUDA_INCLUDE_DIRS})
 
-add_executable(Cuda vectorAddition1.cu
+add_executable(Cuda basicMatrixMultiplication.cu
         project.cpp
         project.h
         project.ui)

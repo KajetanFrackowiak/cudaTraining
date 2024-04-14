@@ -4,6 +4,36 @@
 #include <stdio.h>
 #include <assert.h>
 
+__global__ void matrixMul (int *a, int *b, int *c, int n) {
+	// Compute each thread's row
+	int row = blockIdx.y * blockDim.y + threadIdx.y;
+	// Compute each thread's column
+	int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+	int temp_sum = 0;
+	// Boundary protection
+	if ((row < n) && (col < n)) {
+		// Iterate over row, and down column
+		for (int k = 0; k < n; k++) {
+			// Accumulate result for a single element
+			temp_sum += a[row * n + k] * b[k * n + col];
+		}
+		// Assign result
+		c[row * n + col] = temp_sum;
+	}
+}
+
+void init_matrices(int *h_a, int *h_b, int n) {
+	srand(time(NULL));
+
+	// Initialize matrix A
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			h_a[i * n + j] = rand() % 10;
+			h_b[i * n + j] = rand() % 10;
+		}
+	}
+}
 // Check result
 void verify_result(int* a, int* b, int* c, int n) {
 	int* verify_c;
@@ -73,6 +103,10 @@ int main() {
 	verify_result(h_a, h_b, h_c, n);
 
 	printf("COMPLETED SUCESSFULLY\n");
+	
+	cudaFree(d_a);
+	cudaFree(d_b);
+	cudaFree(d_c);
 
 	return 0;
 }
