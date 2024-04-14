@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-project(Cuda VERSION 0.1.0 LANGUAGES C CXX)
+project(Cuda VERSION 0.1.0 LANGUAGES C CXX CUDA)
 
 # Set the path to the CUDA toolkit
 set(CUDA_TOOLKIT_ROOT_DIR "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1")
-
-# Find CUDA package
-find_package(CUDA REQUIRED)
 
 # Add CUDA include and library directories
 include_directories(${CUDA_INCLUDE_DIRS})

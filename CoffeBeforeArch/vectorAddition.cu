@@ -1,11 +1,11 @@
-#include <cuda_runtime.h>
+﻿#include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
 
-// CUDA kernel for vector addiction
+// CUDA kernel for vector addition
 __global__ void vectorAdd(int* a, int* b, int* c, int n) {
     // Calculate global thead ID (tid)
     int tid = (blockIdx.x * blockDim.x) + threadIdx.x;
@@ -16,13 +16,25 @@ __global__ void vectorAdd(int* a, int* b, int* c, int n) {
     }
 }
 
+void matrix_init(int* matrix, int n) {
+    for (int i = 0; i < n; i++) {
+        matrix[i] = rand() % 100; // random value between 0 and 99
+    }
+}
+
+void error_check(int* a, int* b, int* c, int n) {
+    for (int i = 0; i < n; ++i) {
+        assert(c[i] == a[i] + b[i]);
+    }
+}
+
 int main() {
     // Vector size of 2^16 (65536 elements)
     int n = 2 << 16;
     // Host vector pointers
-    int *h_a, *h_b, *h_c;
+    int* h_a, * h_b, * h_c;
     // Device vector pointer
-    int *d_a, *d_b, *d_c;
+    int* d_a, * d_b, * d_c;
     // Allocation size for all vectors
     size_t bytes = sizeof(int) * n;
 
@@ -40,7 +52,7 @@ int main() {
     matrix_init(h_a, n);
     matrix_init(h_b, n);
 
-    // Copy data from
+    // Copy data from host to device
     cudaMemcpy(d_a, h_a, bytes, cudaMemcpyHostToDevice);
     cudaMemcpy(d_b, h_b, bytes, cudaMemcpyHostToDevice);
 
@@ -48,12 +60,26 @@ int main() {
     int NUM_THREADS = 256;
 
     // Grid size
-    int NUM_BLOCK = (int)ceil(n / NUM_THREADS);
+    int NUM_BLOCKS = (n + NUM_THREADS - 1) / NUM_THREADS;
 
     // Launch kernel on default stream w/o shmem
-    vectorAdd<<<NUM_BLOCK, NUM_THREADS>>>(d_a, d_b, d_c, n);
+    vectorAdd << <NUM_BLOCKS, NUM_THREADS >> > (d_a, d_b, d_c, n);
+
+    // Copy result back to host
+    cudaMemcpy(h_c, d_c, bytes, cudaMemcpyDeviceToHost);
 
     // Check result for errors
     error_check(h_a, h_b, h_c, n);
-    
+
+    printf("COMPLETED SUCCESSFULLY\n");
+
+    // Free host and device memory
+    free(h_a);
+    free(h_b);
+    free(h_c);
+    cudaFree(d_a);
+    cudaFree(d_b);
+    cudaFree(d_c);
+
+    return 0;
 }
