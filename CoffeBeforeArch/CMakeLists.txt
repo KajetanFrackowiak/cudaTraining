@@ -13,7 +13,16 @@ include_directories(${CUDA_INCLUDE_DIRS})
 add_executable(Cuda cacheTiledMatMulti.cu
         project.cpp
         project.h
-        project.ui)
+        project.ui
+        task1.cpp
+        task1.c
+        task2.c
+        task2.c
+        task2.c
+        task3.c
+        task4.c
+        task5.c
+)
 target_link_libraries(Cuda ${CUDA_LIBRARIES})
 
 include(CTest)
