@@ -100,7 +100,7 @@ int main() {
 
 	// Print the result
 	printf("Accumulated result is %d \n", h_v_r[0]);
-	scanf("Press enter to continue: ");
+	// scanf("Press enter to continue: ");
 	assert(h_v_r[0] == 65536);
 
 	printf("COMPLETED SUCCESSFULLY\n");
