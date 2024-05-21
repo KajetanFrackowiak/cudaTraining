@@ -7,7 +7,7 @@ int main() {
     int N = 10;
 
     // Upper bound of matrix size
-    int D = 1 << 14;
+    int D = 1 << 10;
 
     std::vector<float> times;
 

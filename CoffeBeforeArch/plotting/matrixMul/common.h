@@ -127,9 +127,9 @@ std::vector<float> launch_mmul(int D, int N) {
         for (int j = 0; j < N; ++j) {
             cudaEventRecord(start);
             // Uncomment which implementation you would like to profile
-            naive_mmul << <grid, block >> > (d_a, d_b, d_c, i);
+            // naive_mmul << <grid, block >> > (d_a, d_b, d_c, i);
             // aligned_mmul<<<grid, block>>>(d_a, d_b, d_c, i);
-            // tiled_mmul<<<grid, block>>>(d_a, d_b, d_c, i);
+            tiled_mmul<<<grid, block>>>(d_a, d_b, d_c, i);
             cudaEventRecord(stop);
 
             cudaEventSynchronize(stop);
